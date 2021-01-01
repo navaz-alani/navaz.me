@@ -93,7 +93,15 @@ func (api *API) projects(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError,
 		)
 	} else {
-		if err := json.NewEncoder(w).Encode(repos); err != nil {
+		var resp struct {
+			Repos []github.Repository `json:"repos"`
+		}
+		if repos == nil {
+			resp.Repos = []github.Repository{}
+		} else {
+			resp.Repos = repos
+		}
+		if err := json.NewEncoder(w).Encode(resp); err != nil {
 			http.Error(
 				w,
 				"["+endpoint+"] response encode err: "+err.Error(),
