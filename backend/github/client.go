@@ -50,7 +50,7 @@ func (c *GQLClient) newReq(qry string) *http.Request {
 		Method: "POST",
 		URL:    c.apiRoot,
 		Header: map[string][]string{
-			"Authorization": {"token" + c.authToken},
+			"Authorization": {"token " + c.authToken},
 		},
 		Body: ioutil.NopCloser(strings.NewReader(qry)),
 	}
