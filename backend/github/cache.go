@@ -22,6 +22,7 @@ type cache struct {
 
 func newCache() *cache {
 	return &cache{
+		mu:        &sync.RWMutex{},
 		timeAdded: make(map[string]time.Time),
 	}
 }
