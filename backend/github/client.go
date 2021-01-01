@@ -57,11 +57,11 @@ func (c *GQLClient) newReq(qry string) *http.Request {
 }
 
 func (c *GQLClient) GetPinnedRepos() ([]Repository, error) {
-  // if a cached value exists, return that
-  if repos := c.cache.getPinnedRepos(); repos != nil {
-    return repos, nil
-  }
-  // cached value doesn't exist - perform request
+	// if a cached value exists, return that
+	if repos := c.cache.getPinnedRepos(); repos != nil {
+		return repos, nil
+	}
+	// cached value doesn't exist - perform request
 	qry := fmt.Sprintf(`{
     "query":"{user(login: \"%s\") {pinnedItems(first: 6, types: REPOSITORY) {nodes {... on Repository {name description}}}}}"
   }`, c.user)
@@ -80,8 +80,8 @@ func (c *GQLClient) GetPinnedRepos() ([]Repository, error) {
 	} else if err := json.NewDecoder(resp.Body).Decode(&ghResponse); err != nil {
 		return nil, err
 	}
-  repos := ghResponse.Data.User.PinnedItems.Nodes
-  // update cache with the new value
-  c.cache.setPinnedRepos(repos)
+	repos := ghResponse.Data.User.PinnedItems.Nodes
+	// update cache with the new value
+	c.cache.setPinnedRepos(repos)
 	return repos, nil
 }

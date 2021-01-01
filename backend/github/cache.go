@@ -21,23 +21,23 @@ type cache struct {
 }
 
 func newCache() *cache {
-  return &cache{
-    timeAdded: make(map[string]time.Time),
-  }
+	return &cache{
+		timeAdded: make(map[string]time.Time),
+	}
 }
 
 func (c *cache) getPinnedRepos() []Repository {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 	if t, ok := c.timeAdded[pinnedReposKey]; !ok {
-    // no initial value has been set
+		// no initial value has been set
 		return nil
 	} else {
 		if time.Since(t) > cacheLifetime {
-      // value has stayed in the cache for a long time (stale); don't return it
+			// value has stayed in the cache for a long time (stale); don't return it
 			return nil
 		} else {
-      // cached value is valid; return it
+			// cached value is valid; return it
 			return c.pinned
 		}
 	}
