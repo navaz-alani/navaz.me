@@ -1,0 +1,32 @@
+.repo {
+  text-align: left;
+  margin: 1rem;
+
+  flex: 0 32%;
+}
+
+@media only screen and (max-width: 600px){
+  .repo {
+    flex: 0 50%;
+  }
+}
+
+.name {
+  font-size: 25px;
+  text-decoration: dotted underline;
+  margin: 0.5rem;
+}
+
+.name:before {
+  content: "🔗";
+}
+
+.description {
+  margin: 0.5rem;
+}
+
+.dark {
+}
+
+.light {
+}

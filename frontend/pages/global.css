@@ -1,0 +1,46 @@
+h2 {
+  font-size: 35px;
+}
+
+body {
+  font-family: Courier;
+  font-size: 16px;
+  margin: 0;
+}
+
+button {
+  font-family: Courier;
+  font-size: 16px;
+}
+
+input, textarea {
+  font-family: Courier;
+  font-size: 16px;
+}
+
+::-webkit-input-placeholder {
+  font-family: Courier;
+  font-size: 16px;
+}
+::-moz-placeholder {
+  font-family: Courier;
+  font-size: 16px;
+}
+:-ms-input-placeholder {
+  font-family: Courier;
+  font-size: 16px;
+}
+::placeholder {
+  font-family: Courier;
+  font-size: 16px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  font-size: 110%;
+  transition: 0.25s ease-in;
+}

@@ -1,0 +1,56 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  margin: 0.5rem auto 1.5rem;
+}
+
+.button-dark {
+  color: black;
+  background-color: #708d81;
+}
+
+.button-light {
+  color: black;
+  background-color: #F3B61F;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.enabled {
+  opacity: 1;
+}
+
+.field {
+  width: 75%;
+}
+
+.input-field {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+
+  width: 100%;
+
+  flex: 0.75;
+}
+
+.input-err {
+  text-decoration: none;
+  margin: 0.3rem auto 0.6rem;
+}
+
+.err-dark {
+  color: silver;
+}
+
+.err-light {
+  color: red;
+}

@@ -1,0 +1,13 @@
+.social-bar {
+  display: flex;
+  justify-content: center;
+
+  margin: 1rem auto;
+}
+
+.logo {
+  height: 50px;
+  width: 50px;
+
+  padding: 0.5rem;
+}
