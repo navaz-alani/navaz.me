@@ -14,9 +14,9 @@ type Client struct {
 
 type Request struct {
 	Name string `json:"name"`
-	Addr string `json:"addr"`
-	Subj string `json:"subj"`
-	Body string `json:"body"`
+	Addr string `json:"email"`
+	Subj string `json:"subject"`
+	Body string `json:"message"`
 }
 
 func NewClient(key, name, addr string) *Client {
