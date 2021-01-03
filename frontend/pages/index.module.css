@@ -37,3 +37,11 @@
 
   padding: 1rem;
 }
+
+.contact-me-err-dark {
+  color: silver;
+}
+
+.contact-me-err-light {
+  color: red;
+}

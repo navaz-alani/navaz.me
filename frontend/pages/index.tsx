@@ -2,28 +2,23 @@ import {FC, useContext, useEffect, useState} from "react";
 
 import Head from "next/head";
 
-import Panel from "@components/panel/panel.tsx";
+import styles from "./index.module.css";
 
 import ThemeCtx, {ThemeContext} from "@contexts/theme/theme";
 
-import styles from "./index.module.css";
 import SocialBar from "@components/social_bar/socialBar";
 import ThemeSetter from "@components/theme_setter/themeSetter";
-import {getProjects, Repository} from "@utils/github/utils";
-import Repo from "@components/github/repository";
+import Panel from "@components/panel/panel.tsx";
 import Form, {emailRe, fieldType, ValidationErr} from "@components/form/form";
+import Repo from "@components/github/repository";
+
+import {getProjects, Repository} from "@utils/github/utils";
+import {sendMail, MailRequest, MailError} from "@utils/mail/mail";
 
 // Site's props list
 interface Props {
   setTheme: (theme: ThemeContext) => void
 }
-
-interface ContactForm {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-};
 
 const Home: FC<Props> = ({setTheme}) => {
   // current site theme
@@ -31,12 +26,19 @@ const Home: FC<Props> = ({setTheme}) => {
 
   // obtain a list of pinned GitHub repositories
   let [repos, setRepos] = useState<Repository[]>([]);
-  let [err, setErr] = useState<string>("");
+  let [repoErr, setRepoErr] = useState<string>("");
   useEffect(() => {
     getProjects()
       .then((repos: Repository[]) => setRepos(repos))
-      .catch(() => setErr("An error occurred."))
+      .catch(() => setRepoErr("An error occurred."))
   }, [])
+
+  let [mailRequest, setMailRequest] = useState<MailRequest>({
+    name: "", email: "", subject: "", message: ""
+  });
+  let [mailErr, setMailErr] = useState<MailError>({
+    error: false, message: "",
+  });
 
   return (
     <>
@@ -75,8 +77,8 @@ const Home: FC<Props> = ({setTheme}) => {
             <h2>Projects</h2>
             <div className={styles["projects"]}>
               {
-                (err !== "")
-                  ? err
+                (repoErr !== "")
+                  ? repoErr
                   : repos.map((repo: Repository, key: number) => {
                     return <Repo repo={repo} key={key} />
                   })
@@ -91,15 +93,33 @@ const Home: FC<Props> = ({setTheme}) => {
             <h2>Contact Me</h2>
             <p>Use the following form to get in touch with me.</p>
             {/* genric form component */}
-            <Form<ContactForm>
-              initialValues={{
-                name: "",
-                email: "",
-                subject: "",
-                message: "",
-              }}
-              submitHandler={(_: ContactForm) => {
+            <Form<MailRequest>
+              initialValues={mailRequest}
+              submitHandler={async (mr: MailRequest) => {
                 // submit json to backend
+                await sendMail(mr)
+                  .then((err: MailError) => {
+                    if (err.error) {
+                      setMailErr(err);
+                      console.error(err.message);
+                    } else {
+                      setMailErr({
+                        error: false,
+                        message: `Message successfully sent!
+                        I'll get back to you as soon as possible!`,
+                      });
+                      setMailRequest({
+                        name: "", email: "", subject: "", message: "",
+                      });
+                    }
+                  })
+                  .catch((err) => {
+                    console.error(`An unexpected error occurred: ${err}`)
+                    setMailErr({
+                      error: true,
+                      message: "An unexpected error occurred!",
+                    });
+                  });
               }}
               fieldPlaceholders={new Map<string, string>([
                 ["subject", "Subject of Communication"],
@@ -108,7 +128,7 @@ const Home: FC<Props> = ({setTheme}) => {
               fieldTypes={new Map<string, fieldType>([
                 ["message", "textarea"],
               ])}
-              validateHandler={(values: ContactForm) => {
+              validateHandler={(values: MailRequest) => {
                 let errs: ValidationErr[] = [];
                 // validate name
                 if (values.name === "")
@@ -125,6 +145,9 @@ const Home: FC<Props> = ({setTheme}) => {
                 return errs;
               }}
             />
+            <p className={`${mailErr.error ? styles[`contact-me-err-${themeCtx}`] : ""}`}>
+              {mailErr.message}
+            </p>
           </div>
         </Panel>
       </div>
