@@ -1,5 +1,5 @@
 import ThemeCtx, {ThemeContext} from "@contexts/theme/theme";
-import {ChangeEvent, ReactElement, useContext, useState} from "react";
+import {ChangeEvent, ReactElement, useContext, useEffect, useState} from "react";
 
 import styles from "./form.module.css";
 
@@ -50,6 +50,10 @@ const Form: <T, >(p: Props<T>) => ReactElement<Props<T>> = (props) => {
 
   const submit = () => {
     setSubmitting(true);
+  }
+
+  useEffect(() => {
+    if (submitting === false) return;
     if (props.validateHandler !== undefined) {
       let errs: ValidationErr[] = props.validateHandler(values);
       if (errs.length != 0) {
@@ -59,9 +63,11 @@ const Form: <T, >(p: Props<T>) => ReactElement<Props<T>> = (props) => {
       }
       setValidationErrs(errs);
     }
-    props.submitHandler(values);
-    setSubmitting(false);
-  }
+    (async () => {
+      await props.submitHandler(values)
+      setSubmitting(false)
+    })()
+  }, [submitting]);
 
   return (
     <div className={styles["form"]}>
