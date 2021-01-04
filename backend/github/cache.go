@@ -9,38 +9,42 @@ import (
 // the cache.
 const cacheLifetime = time.Minute
 
+type dataKey = string
+
 // keys of the data managed by the `cache`
 const (
-	pinnedReposKey = "pinned-repos"
+	pinnedReposKey dataKey = "pinned-repos"
 )
 
+// `cache` is a cache for the GitHub client. It caches key pieces of data needed
+// by the client. A value added to the cache is valid for `cacheLifetime` amount
+// of time, after which it becomes stale and will not be returned on a lookup.
 type cache struct {
-	mu        *sync.RWMutex
+	mu        *sync.Mutex
 	pinned    []Repository
-	timeAdded map[string]time.Time
+	timeAdded map[dataKey]time.Time
 }
 
 func newCache() *cache {
 	return &cache{
-		mu:        &sync.RWMutex{},
-		timeAdded: make(map[string]time.Time),
+		mu:        &sync.Mutex{},
+		timeAdded: make(map[dataKey]time.Time),
 	}
 }
 
 func (c *cache) getPinnedRepos() []Repository {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	if t, ok := c.timeAdded[pinnedReposKey]; !ok {
 		// no initial value has been set
 		return nil
 	} else {
 		if time.Since(t) > cacheLifetime {
-			// value has stayed in the cache for a long time (stale); don't return it
-			return nil
-		} else {
-			// cached value is valid; return it
-			return c.pinned
+			// value has stayed in the cache for a long time (stale); don't return it;
+			// lose ref to cached value;
+			c.pinned = nil
 		}
+		return c.pinned
 	}
 }
 
