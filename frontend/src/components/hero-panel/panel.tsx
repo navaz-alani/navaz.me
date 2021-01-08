@@ -20,7 +20,10 @@ const HeroPanel: FC<Props> = ({setTheme}) => {
 
   return (
     <div className={styles["about-me-panel"]}>
-      <img className={styles["about-me-img"]} src={`/me.${webpSupport ? "webp" : "jpg"}`} />
+      <img className={styles["about-me-img"]}
+        src={`/me.${webpSupport ? "webp" : "jpg"}`}
+        alt="Image of Navaz Alani"
+      />
       <h1>Welcome!</h1>
       <div>
         <p>I'm <i>Navaz Alani.</i></p>

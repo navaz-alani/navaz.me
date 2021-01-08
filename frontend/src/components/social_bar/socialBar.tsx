@@ -14,13 +14,32 @@ interface SocialMediaInfo {
   assetsDir: string;
   // href of the link that clicking the logo should take the user to
   link: string;
+  // alt text for logo
+  alt: string;
+  // title of the link
+  title: string;
 };
 
 // social media information to be rendered in the SocialBar
 const socials: SocialMediaInfo[] = [
-  {assetsDir: "/github_assets", link: "https://github.com/navaz-alani"},
-  {assetsDir: "/linkedin_assets", link: "https://www.linkedin.com/in/navazalani/"},
-  {assetsDir: "/twitter_assets", link: "https://twitter.com/alani_navaz"},
+  {
+    assetsDir: "/github_assets",
+    link: "https://github.com/navaz-alani",
+    alt: "GitHub logo",
+    title: "Link to my GitHub page",
+  },
+  {
+    assetsDir: "/linkedin_assets",
+    link: "https://www.linkedin.com/in/navazalani/",
+    alt: "LinkedIn logo",
+    title: "Link to my LinkedIn page",
+  },
+  {
+    assetsDir: "/twitter_assets",
+    link: "https://twitter.com/alani_navaz",
+    alt: "Twitter logo",
+    title: "Link to my Twitter page",
+  },
 ];
 
 const SocialBar: FC<Props> = (p) => {
@@ -36,9 +55,11 @@ const SocialBar: FC<Props> = (p) => {
               href={smi.link}
               target="_blank" /* open link in new tab */
               rel="noopener noreferrer"
+              title={smi.title}
             >
               <img className={styles["logo"]}
                 src={`${smi.assetsDir}/logo_${p.theme}.${webpSupport ? "webp" : "png"}`}
+                alt={smi.alt}
               />
             </a>
           );
