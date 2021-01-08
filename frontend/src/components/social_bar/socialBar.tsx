@@ -1,9 +1,8 @@
-import {FC, useEffect, useState} from "react";
+import {FC} from "react";
 
 import {ThemeContext as ThemeContextT} from "@contexts/theme/theme";
 
 import styles from "./socialBar.module.css";
-import webpSupported from "@utils/webpSupport";
 
 interface Props {
   theme: ThemeContextT;
@@ -43,9 +42,6 @@ const socials: SocialMediaInfo[] = [
 ];
 
 const SocialBar: FC<Props> = (p) => {
-  let [webpSupport, setWebpSupport] = useState<boolean>(false);
-  useEffect(() => setWebpSupport(webpSupported()), []);
-
   return (
     <div className={styles["social-bar"]}>
       {
@@ -57,10 +53,13 @@ const SocialBar: FC<Props> = (p) => {
               rel="noopener noreferrer"
               title={smi.title}
             >
-              <img className={styles["logo"]}
-                src={`${smi.assetsDir}/logo_${p.theme}.${webpSupport ? "webp" : "png"}`}
-                alt={smi.alt}
-              />
+              <picture>
+                <source srcSet={`${smi.assetsDir}/logo_${p.theme}.webp`} type="image/webp" />
+                <img className={styles["logo"]}
+                  src={`${smi.assetsDir}/logo_${p.theme}.png`}
+                  alt={smi.alt}
+                />
+              </picture>
             </a>
           );
         })
