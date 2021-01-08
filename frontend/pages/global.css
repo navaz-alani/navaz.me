@@ -1,38 +1,42 @@
+:root {
+  --font-size: 19px;
+}
+
 h2 {
   font-size: 35px;
 }
 
 body {
   font-family: Courier;
-  font-size: 16px;
+  font-size: var(--font-size);
   margin: 0;
 }
 
 button {
   font-family: Courier;
-  font-size: 16px;
+  font-size: var(--font-size);
 }
 
 input, textarea {
   font-family: Courier;
-  font-size: 16px;
+  font-size: var(--font-size);
 }
 
 ::-webkit-input-placeholder {
   font-family: Courier;
-  font-size: 16px;
+  font-size: var(--font-size);
 }
 ::-moz-placeholder {
   font-family: Courier;
-  font-size: 16px;
+  font-size: var(--font-size);
 }
 :-ms-input-placeholder {
   font-family: Courier;
-  font-size: 16px;
+  font-size: var(--font-size);
 }
 ::placeholder {
   font-family: Courier;
-  font-size: 16px;
+  font-size: var(--font-size);
 }
 
 a {
