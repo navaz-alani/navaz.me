@@ -37,7 +37,7 @@ const Panel: FC<Props> = (p) => {
       `,
       fg: `
         ${styles["foreground"]} ${patterns.get(`_base-${theme}`)}
-        ${styles["slide-in"]}
+        ${styles["slide-in__disabled"]}
         ${patterns.get(`${(p.fgPattern === undefined || p.fgPattern === "")
         ? defaults.fg : p.fgPattern}-${theme}`)}
       `,

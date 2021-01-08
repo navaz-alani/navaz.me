@@ -31,6 +31,7 @@ const Home: FC<Props> = ({setTheme}) => {
       {panel: ProjectsPanel, bgPattern: "rectangles"},
       {panel: ContactPanel, bgPattern: "cross"},
     ]
+    // TODO: randomize the patterns of the panels here ??
     return panels;
   })();
 

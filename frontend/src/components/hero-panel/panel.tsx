@@ -25,10 +25,10 @@ const HeroPanel: FC<Props> = ({setTheme}) => {
       </picture>
       <h1>Welcome!</h1>
       <div>
-        <p>I'm <i>Navaz Alani.</i></p>
+        <p>Hey, I'm <i>Navaz Alani.</i></p>
         <p>
-          Mathematics Undergrad @UWaterloo <br />
-                Programmer
+          Mathematics Undergrad@UWaterloo <br />
+          Programmer, Problem Solver & Pursuer of Knowledge
         </p>
         <p className={styles["scroll-prompt"]}>
           <i>Scroll down, or check out these links</i>
