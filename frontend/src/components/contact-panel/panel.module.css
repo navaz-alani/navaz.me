@@ -1,0 +1,16 @@
+.contact-me-panel {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+
+  padding: 1rem;
+}
+
+.contact-me-err-dark {
+  color: silver;
+}
+
+.contact-me-err-light {
+  color: red;
+}
