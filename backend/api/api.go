@@ -79,6 +79,8 @@ func (api *API) Serve() error {
 	// configure the router with the API endpoints
 	router.HandleFunc("/projects", api.projects)
 	router.HandleFunc("/send-mail", api.sendMail)
+	// configure test endpoints
+	router.HandleFunc("/send-mail-test", api.sendMailTest)
 
 	return http.ListenAndServe(fmt.Sprintf("%s:%s", api.host, api.port), router)
 }
