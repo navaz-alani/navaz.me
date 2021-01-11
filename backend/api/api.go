@@ -77,6 +77,7 @@ func NewAPI(env *dotenv.Env) (*API, error) {
 }
 
 func (api *API) cleanup() {
+  api.mailDosGuard.Cleanup()
 	api.ghc.Cleanup()
 }
 
