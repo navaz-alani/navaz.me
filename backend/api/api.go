@@ -95,11 +95,6 @@ func (api *API) Serve() error {
 
 // GET endpoint to obtain a list of GitHub projects.
 func (api *API) projects(w http.ResponseWriter, r *http.Request) {
-  // testing dos guard on /projects for convenience
-	if err := api.mailDosGuard.Guard(r); err != nil {
-		http.Error(w, err.Error(), http.StatusTooManyRequests)
-		return
-	}
 	const endpoint = "/projects"
 	if repos, err := api.ghc.GetPinnedRepos(); err != nil {
 		http.Error(
