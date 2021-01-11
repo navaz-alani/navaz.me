@@ -59,7 +59,7 @@ func NewAPI(env *dotenv.Env) (*API, error) {
 		return nil, fmt.Errorf("variables not defined: %+v", undef)
 	}
 	api := &API{
-		// mail spam guard allows 3 mail requests per IP address, per hour
+		// mail spam guard allows 1 mail requests per IP address, per hour
 		mailDosGuard: dos.NewDOSGuard(1, time.Hour),
 		// initialize GitHub client
 		ghc: github.NewGQLClient(
