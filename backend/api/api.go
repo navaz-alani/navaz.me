@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/navaz-alani/navaz.me/dos"
 	"github.com/navaz-alani/navaz.me/mail"
 
 	"github.com/navaz-alani/dotenv"
@@ -33,9 +35,10 @@ const (
 
 // API is the site's API implementation.
 type API struct {
-	ghc        github.Client
-	mc         *mail.Client
-	host, port string
+	mailDosGuard *dos.DOSGuard
+	ghc          github.Client
+	mc           *mail.Client
+	host, port   string
 }
 
 // `NewAPI` creates a new API and initializes its components using the given
@@ -55,20 +58,26 @@ func NewAPI(env *dotenv.Env) (*API, error) {
 	if undef := env.CheckRequired(required); len(undef) != 0 {
 		return nil, fmt.Errorf("variables not defined: %+v", undef)
 	}
-	api := new(API)
-	// initialize GitHub client
-	api.ghc = github.NewGQLClient(
-		env.Get(ghUserKey), env.Get(ghTokenKey),
-	)
-	api.mc = mail.NewClient(
-		env.Get(mailTokenKey), env.Get(mailNameKey), env.Get(mailAddrKey),
-	)
-	api.host = env.Get(routerHostKey)
-	api.port = env.Get(routerPortKey)
+	api := &API{
+		// mail spam guard allows 1 mail requests per IP address, per hour
+		mailDosGuard: dos.NewDOSGuard(1, time.Hour),
+		// initialize GitHub client
+		ghc: github.NewGQLClient(
+			env.Get(ghUserKey), env.Get(ghTokenKey),
+		),
+		// initialize mail client
+		mc: mail.NewClient(
+			env.Get(mailTokenKey), env.Get(mailNameKey), env.Get(mailAddrKey),
+		),
+		// router details
+		host: env.Get(routerHostKey),
+		port: env.Get(routerPortKey),
+	}
 	return api, nil
 }
 
 func (api *API) cleanup() {
+  api.mailDosGuard.Cleanup()
 	api.ghc.Cleanup()
 }
 
@@ -116,6 +125,13 @@ func (api *API) projects(w http.ResponseWriter, r *http.Request) {
 // POST endpoint to send an email.
 func (api *API) sendMail(w http.ResponseWriter, r *http.Request) {
 	const endpoint = "/send-mail"
+
+	// check if IP has sent too many requests - if so, reject request
+	if err := api.mailDosGuard.Guard(r); err != nil {
+		http.Error(w, err.Error(), http.StatusTooManyRequests)
+		return
+	}
+
 	var req mail.Request
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(
