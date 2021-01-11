@@ -39,9 +39,9 @@ func NewDOSGuard(maxQry int, dur time.Duration) *DOSGuard {
 			case <-dg.done:
 				ticker.Stop()
 				break
-			case qry := <-dg.ipStream: // this does not read from `dg.ipStream` after `dg.maxQry + 1` reads
+			case qry := <-dg.ipStream:
 				dg.ips[qry.ip] += 1
-				if dg.ips[qry.ip] >= dg.maxQry {
+				if dg.ips[qry.ip] > dg.maxQry {
 					qry.ret <- fmt.Errorf("dos guard: %s IP blocked - too many queries", qry.ip)
 				} else {
 					qry.ret <- nil
@@ -60,12 +60,12 @@ func (dg *DOSGuard) Guard(r *http.Request) error {
 		return fmt.Errorf("dos guard err: failed to parse sender IP - won't serve")
 	} else {
 		ret := make(chan error)
-		// the following send is blocking for some reason after `dg.maxQry + 1` requests
-		dg.ipStream <- ipQry{
-			ip:  ip,
-			ret: ret,
-		}
-		fmt.Println("sent qry")
+		go func() {
+			dg.ipStream <- ipQry{
+				ip:  ip,
+				ret: ret,
+			}
+		}()
 		return <-ret
 	}
 }
